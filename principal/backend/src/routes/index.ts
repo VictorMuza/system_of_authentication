@@ -1,17 +1,10 @@
 import { Router } from 'express'
+import usersRoutes from './users.routes'
 
 const routes = Router()
 
 routes.get('/health', (req, res) => {
   return res.json({ status: 'ok' })
-})
-
-routes.post('/users', (req, res) => {
-
-})
-
-routes.get('/users/me', (req, res) => {
-
 })
 
 export default routes
