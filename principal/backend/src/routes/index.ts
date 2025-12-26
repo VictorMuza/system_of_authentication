@@ -7,4 +7,6 @@ routes.get('/health', (req, res) => {
   return res.json({ status: 'ok' })
 })
 
+routes.use(usersRoutes)
+
 export default routes
