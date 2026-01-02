@@ -1,12 +1,10 @@
 import { Router } from 'express'
 import usersRoutes from './users.routes'
+import sessionsRoutes from './sessions.routes'
 
 const routes = Router()
 
-routes.get('/health', (req, res) => {
-  return res.json({ status: 'ok' })
-})
-
 routes.use(usersRoutes)
+routes.use(sessionsRoutes)
 
 export default routes
