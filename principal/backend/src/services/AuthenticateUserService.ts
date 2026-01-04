@@ -28,7 +28,9 @@ class AuthenticateUserService {
         }
         // 3️⃣ Gerar token
         const token = jwt.sign(
-            { userId: fakeUser.id }, 'secret-key', { expiresIn: '1d' }
+            { userId: fakeUser.id },
+            process.env.JWT_SECRET as string,
+            { expiresIn: '1d' }
         );
 
         return {

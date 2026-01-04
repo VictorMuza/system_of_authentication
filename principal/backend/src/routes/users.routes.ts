@@ -11,8 +11,9 @@ usersRoutes.get(
     ensureAuthenticated,
     (req, res) => {
         return res.json({
-            message: "Você acessou uma rota protegida"
+            message: "Você acessou uma rota protegida",
+            userId: req.userId
         })
     }
 )
-export default usersRoutes
+export default usersRoutes;
