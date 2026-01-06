@@ -1,47 +1,51 @@
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import { database } from '../database'
 
-interface AuthenticateUserDTO {
+interface AuthenticateDTO {
     email: string
     password: string
 }
 
 class AuthenticateUserService {
-    async execute({ email, password }: AuthenticateUserDTO) {
-        // ⚠️ Simulação de usuário salvo
-        const fakeUser = {
-            id: 1,
-            name: "Victor",
-            email: "victor@email.com",
-            password_hash: await bcrypt.hash("123456", 10)
+    async execute({ email, password }: AuthenticateDTO) {
+        const db = await database
 
+        const user = await db.get(
+            'SELECT * FROM users WHERE email = ?',
+            [email]
+        )
+
+        if (!user) {
+            throw new Error('Email ou senha incorretos')
         }
-        // 1️⃣ Verificar email
-        if (email !== fakeUser.email) {
-            throw new Error('Email ou senha incorretos');
-        }
-        // 2️⃣ Verificar senha
-        const passwordMatch = await bcrypt.compare(password, fakeUser.password_hash);
+
+        const passwordMatch = await bcrypt.compare(
+            password,
+            user.password_hash
+        )
 
         if (!passwordMatch) {
-            throw new Error('Email ou senha incorretos');
+            throw new Error('Email ou senha incorretos')
         }
-        // 3️⃣ Gerar token
+
         const token = jwt.sign(
-            { userId: fakeUser.id },
+            { userId: user.id },
             process.env.JWT_SECRET as string,
-            { expiresIn: '1d' }
-        );
+            {
+                expiresIn: '1d'
+            }
+        )
 
         return {
             user: {
-                id: fakeUser.id,
-                name: fakeUser.name,
-                email: fakeUser.email
+                id: user.id,
+                name: user.name,
+                email: user.email
             },
             token
         }
     }
 }
 
-export default new AuthenticateUserService();
+export default new AuthenticateUserService()
